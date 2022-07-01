@@ -1,0 +1,444 @@
+openapi: 3.0.0
+servers:
+  - description: Production website
+    url: https://api.makingspeechestalk.com
+  - description: Test website
+    url: https://api-test.makingspeechestalk.com
+info:
+  description: Api for MST - Decido
+  version: "1.0.0"
+  title: MakingSpeechesTalk API
+  contact:
+    email: marcello.verona@lisboncouncil.net
+    name: M.Marcello Verona
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: management
+    description: Calls with required authentication
+paths:
+  /channels:
+    get:
+      tags:
+        - management
+      summary: Get the list of available channel
+      operationId: list_channels
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Channel'
+        '400':
+          description: bad input parameter
+  /channels/{ch_id}:
+    parameters:
+      - in: path
+        name: ch_id
+        description: Identificator of the channel
+        required: true
+        schema:
+          type: integer
+          format: int32
+    get:
+      tags:
+        - management
+      summary: Get the channel with the documents
+      operationId: get_channel
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Channel'
+        '400':
+          description: bad input parameter
+    put:
+      tags:
+        - management
+      summary: Update channel
+      operationId: update_channel
+      description: Update a channel by sending some properties
+      responses:
+        '201':
+          description: item updated
+        '400':
+          description: 'invalid input, object invalid'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Channel'
+        description: Channel item to be updated
+    delete:
+      tags:
+        - management
+      summary: Update channel
+      operationId: delete_channel
+      description: Update a channel by sending some properties
+      responses:
+        '201':
+          description: item deleted
+        '400':
+          description: 'invalid input, object invalid'
+  /channels/new :
+    post:
+      tags:
+        - management
+      summary: Create a new channel
+      operationId: create_channel
+      description: Adds an item to the system
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: an existing item already exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Channel'
+        description: Channel item to add
+  /channels/{ch_id}/documents:
+    parameters:
+      - in: path
+        name: ch_id
+        description: Identificator of the channel
+        required: true
+        schema:
+          type: integer
+          format: int32
+    get:
+      tags:
+        - management
+      summary: Get the list of available documents of a channel
+      operationId: list_documents
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+        '400':
+          description: bad input parameter
+  /documents/{document_id}:
+    parameters:
+      - in: path
+        name: document_id
+        description: Identificator of the document
+        required: true
+        schema:
+          type: integer
+          format: int32
+    get:
+      tags:
+        - management
+      operationId: get_document
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Channel'
+        '400':
+          description: bad input parameter
+        '404':
+          description: document not found
+    put:
+      tags:
+        - management
+      operationId: update_document
+      
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: an existing item already exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Document'
+        description: Channel item to be updated
+    delete:
+      tags:
+        - management
+      operationId: delete_document
+      responses:
+        '201':
+          description: item deleted
+        '400':
+          description: 'invalid input, object invalid'
+          
+  /documents/new:
+    post: 
+      tags:
+        - management
+      operationId: create_document
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+          
+  /documents/{document_id}/comments:
+    parameters:
+      - in: path
+        name: document_id
+        description: Identificator of the document
+        required: true
+        schema:
+          type: integer
+          format: int32
+    get:
+      tags:
+        - management
+      summary: Get the list of available comments of a document
+      operationId: list_comments
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        '400':
+          description: bad input parameter
+  /comments/{comment_id}:
+    parameters:
+      - in: path
+        name: comment_id
+        description: Identificator of the comment
+        required: true
+        schema:
+          type: integer
+          format: int32
+    get:
+      tags:
+        - management
+      operationId: get_comment
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        '400':
+          description: bad input parameter
+        '404':
+          description: document not found
+    put:
+      tags:
+        - management
+      operationId: update_comment
+      
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: an existing item already exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+        description: Comment item to be updated
+    delete:
+      tags:
+        - management
+      operationId: delete_comment
+      responses:
+        '201':
+          description: item deleted
+        '400':
+          description: 'invalid input, object invalid'
+    
+       
+components:
+  schemas:
+    Channel:
+      type: object
+      required:
+        - ch_id
+        - chname
+        - title
+        - author
+        - lang
+        - public
+      properties:
+        ch_id:
+          type: integer
+          example: 123
+        chname:
+          type: string
+          example: SALL_Roadmap
+        title:  
+          type: string
+          example: Policy Roadmap to European Policies for Living-Lab-Based Open Schooling
+        creation:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+        last_mod:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+        introduction: 
+          type: string
+          format: long_text
+        description: 
+          type: string
+          format: long_text
+        author: 
+          type: integer
+          format: int8
+        lang:
+          type: string
+          #default: en_US
+          example: en_US (or) it_IT (or) es_ES ... 
+        public:
+          type: boolean
+          format: integer
+         #default: 0
+          example: 1
+        logo: 
+          type: string
+          format: url
+          example: https://mycloud-service.com/images/image.jpg
+    Document:
+      type: object
+      description: The commentable text, with a fk to the channel as parent and the comments as childs
+      required:
+        - ch_id
+        - title
+        - html
+      properties: 
+        document_id:
+          type: integer
+          example: 1234
+        ch_id:
+          type: integer
+          description: foreing key
+          example: 123
+        title: 
+          type: string
+          example: My awesome commentable document
+        html:
+          type: string
+          format: HTML with some tag allowed
+        data_ins:
+          type: string
+          format: date-time
+          example: '2021-08-29 09:12:33'
+        visibility:
+          type: boolean
+          format: integer
+          default: 1
+        last_update:
+          type: string
+          format: date-time
+          example: '2021-08-29 09:12:33'
+        speaker: 
+          type: string
+          example: John Doe
+          description: the author of the document, if needed
+        pars:
+          type: array
+          items:
+            $ref: '#/components/schemas/Paragraph'
+    Comment:
+      type: object
+      required: 
+        - comment_id
+        - document_id
+        - comm
+        - user_id
+      properties:
+        comment_id:
+          type: integer
+          format: unsigned
+          example: 12345
+        document_id:
+          type: integer
+          format: unsigned 
+          example: 12345
+        ip:
+          type: string
+          format: ipv4
+          example: 110.22.34.56
+        published:
+          type: number
+          description: 0=in waiting, 1=published, -1=spam, -2=reported by users
+          enum:
+            - 0
+            - 1
+            - -1
+            - -2
+          default: 1
+        comm: 
+          type: string
+          example: "I think this sentence is interesting because..."
+          description: the comment related to the sentence
+        user_id: 
+          type: integer
+          description: the identificator of the user
+    Paragraph:
+      type: object 
+      description: The HTML of the document, parsed and cutted in multiple commentable elements
+      required:
+        - id_p
+        - document_id  
+      properties: 
+        id_p: 
+          type: integer
+          description: Unique id of the paragraph
+          example: 100
+        document_id: 
+          type: integer
+          description: Parent's document id
+          example: 123
+        p:
+          type: string
+          description: the single, commentable element. Can be a paragraph or a list element, etc.
+          example: "The lazy dog jumped over the quick brown fox"
+        ord:
+          type: integer
+          description: the list number (used for sorting)
+          example: 5
+        

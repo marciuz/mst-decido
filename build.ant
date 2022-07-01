@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="synch" default="sincronizza">
+    <property name="username" value="root"/>
+    <property name="host" value="lisbon02"/>
+    <property name="path" value="/var/www/vhosts/mst_decido_api/"/>
+    <property name="aws" value="/usr/local/bin/aws"/>
+
+    <target name="sincronizza">
+        <exec dir="." executable="rsync" failonerror="true">
+            <arg value="-avu"/>
+            <arg value="--exclude=.git"/>
+            <arg value="--exclude=log"/>
+            <arg value="--exclude=files"/>
+            <arg value="--exclude=tmp"/>
+            <arg value="${username}@${host}:${path}"/>
+            <arg value="./"/>
+        </exec>
+    </target>
+    
+    <target name="upload_sync">
+        <exec dir="." executable="rsync" failonerror="true">
+            <arg value="-avu"/>
+            <arg value="--exclude=.git"/>
+            <arg value="--exclude=log"/>
+            <arg value="--exclude=files"/>
+            <arg value="--exclude=tmp"/>
+            <arg value="./"/>
+            <arg value="${username}@${host}:${path}"/>
+            
+        </exec>
+    </target>
+    
+    
+</project>

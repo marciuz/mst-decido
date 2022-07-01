@@ -1,0 +1,22 @@
+{
+    "name": "mverona/mst-decido",
+    "description": "API for Making Speeches Talk",
+    "type": "project",
+    "require": {
+        "altorouter/altorouter": "^2.0",
+        "monolog/monolog": "^2.7",
+        "firebase/php-jwt": "^6.2"
+    },
+    "license": "CC BY",
+    "authors": [
+        {
+            "name": "M.Marcello Verona",
+            "email": "marcello.verona@lisboncouncil.net"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+          "":"classes/src/"
+        }
+    }
+}
