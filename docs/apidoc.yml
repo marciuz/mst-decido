@@ -17,6 +17,8 @@ info:
 tags:
   - name: management
     description: Calls with required authentication
+security:
+  - apiKey: []
 paths:
   /channels:
     get:
@@ -25,8 +27,8 @@ paths:
       summary: Get the list of available channel
       operationId: list_channels
       description: |
-        By passing in the appropriate options, you can search for
-        available inventory in the system
+        The list of available channels, 
+        related to the user id specified in a header.
       responses:
         '200':
           description: search results matching criteria
@@ -38,10 +40,10 @@ paths:
                   $ref: '#/components/schemas/Channel'
         '400':
           description: bad input parameter
-  /channels/{ch_id}:
+  /channels/{id_ch}:
     parameters:
       - in: path
-        name: ch_id
+        name: id_ch
         description: Identificator of the channel
         required: true
         schema:
@@ -53,17 +55,15 @@ paths:
       summary: Get the channel with the documents
       operationId: get_channel
       description: |
-        By passing in the appropriate options, you can search for
-        available inventory in the system
+        The detail of a channel, represented by the Channel object, 
+        related to the user id specified in a header.
       responses:
         '200':
           description: search results matching criteria
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Channel'
+                $ref: '#/components/schemas/Channel'
         '400':
           description: bad input parameter
     put:
@@ -114,10 +114,10 @@ paths:
             schema:
               $ref: '#/components/schemas/Channel'
         description: Channel item to add
-  /channels/{ch_id}/documents:
+  /channels/{id_ch}/documents:
     parameters:
       - in: path
-        name: ch_id
+        name: id_ch
         description: Identificator of the channel
         required: true
         schema:
@@ -129,8 +129,7 @@ paths:
       summary: Get the list of available documents of a channel
       operationId: list_documents
       description: |
-        By passing in the appropriate options, you can search for
-        available inventory in the system
+        List of the documents related to the channel {id_ch}
       responses:
         '200':
           description: search results matching criteria
@@ -142,10 +141,10 @@ paths:
                   $ref: '#/components/schemas/Document'
         '400':
           description: bad input parameter
-  /documents/{document_id}:
+  /documents/{id_speech}:
     parameters:
       - in: path
-        name: document_id
+        name: id_speech
         description: Identificator of the document
         required: true
         schema:
@@ -207,10 +206,10 @@ paths:
         '400':
           description: 'invalid input, object invalid'
           
-  /documents/{document_id}/comments:
+  /documents/{id_speech}/comments:
     parameters:
       - in: path
-        name: document_id
+        name: id_speech
         description: Identificator of the document
         required: true
         schema:
@@ -222,8 +221,7 @@ paths:
       summary: Get the list of available comments of a document
       operationId: list_comments
       description: |
-        By passing in the appropriate options, you can search for
-        available inventory in the system
+        List of the comments related to the document.
       responses:
         '200':
           description: search results matching criteria
@@ -288,21 +286,24 @@ paths:
           description: item deleted
         '400':
           description: 'invalid input, object invalid'
-    
-       
+
 components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-Decido-Auth
   schemas:
     Channel:
       type: object
       required:
-        - ch_id
         - chname
         - title
         - author
         - lang
         - public
       properties:
-        ch_id:
+        id_ch:
           type: integer
           example: 123
         chname:
@@ -330,12 +331,12 @@ components:
           format: int8
         lang:
           type: string
-          #default: en_US
+          default: en_US
           example: en_US (or) it_IT (or) es_ES ... 
         public:
           type: boolean
           format: integer
-         #default: 0
+          default: 0
           example: 1
         logo: 
           type: string
@@ -345,14 +346,14 @@ components:
       type: object
       description: The commentable text, with a fk to the channel as parent and the comments as childs
       required:
-        - ch_id
+        - id_ch
         - title
         - html
       properties: 
-        document_id:
+        id_speech:
           type: integer
           example: 1234
-        ch_id:
+        id_ch:
           type: integer
           description: foreing key
           example: 123
@@ -386,7 +387,7 @@ components:
       type: object
       required: 
         - comment_id
-        - document_id
+        - id_speech
         - comm
         - user_id
       properties:
@@ -394,7 +395,7 @@ components:
           type: integer
           format: unsigned
           example: 12345
-        document_id:
+        id_speech:
           type: integer
           format: unsigned 
           example: 12345
@@ -423,13 +424,13 @@ components:
       description: The HTML of the document, parsed and cutted in multiple commentable elements
       required:
         - id_p
-        - document_id  
+        - id_speech  
       properties: 
         id_p: 
           type: integer
           description: Unique id of the paragraph
           example: 100
-        document_id: 
+        id_speech: 
           type: integer
           description: Parent's document id
           example: 123
@@ -441,4 +442,3 @@ components:
           type: integer
           description: the list number (used for sorting)
           example: 5
-        
