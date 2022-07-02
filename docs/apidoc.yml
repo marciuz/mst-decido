@@ -5,8 +5,10 @@ servers:
   - description: Test website
     url: https://api-test.makingspeechestalk.com
 info:
-  description: Api for MST - Decido
-  version: "1.0.0"
+  description: |
+    The API was created in the context of the DECIDO project (https://www.decido-project.eu/) in order to enable an integration of MakingSpeechesTalk (MST) with the Decido platform. The APIs represent the main entities of MST and allow the management of all activities related to listing the selection, creation, modification and deletion of instances. In detail, it is possible to manage the following entities: Channel, Document, Comment. 
+    The standard http verbs GET, POST, PUT and DELETE are used to manage the operations.
+  version: 1.0.3
   title: MakingSpeechesTalk API
   contact:
     email: marcello.verona@lisboncouncil.net
@@ -24,20 +26,26 @@ paths:
     get:
       tags:
         - management
-      summary: Get the list of available channel
+      summary: Get the list of available channels
       operationId: list_channels
       description: |
         The list of available channels, 
         related to the user id specified in a header.
       responses:
         '200':
-          description: search results matching criteria
+          description: The list of channel object 
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Channel'
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Channel'
+                  error:
+                    type: boolean
+                    default: false
         '400':
           description: bad input parameter
   /channels/{id_ch}:
@@ -59,11 +67,18 @@ paths:
         related to the user id specified in a header.
       responses:
         '200':
-          description: search results matching criteria
+          description: The channel object
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Channel'
+                type: object
+                properties:
+                  result:
+                    type: object
+                    $ref: '#/components/schemas/Channel'
+                  error:
+                    type: boolean
+                    default: false
         '400':
           description: bad input parameter
     put:
@@ -90,10 +105,43 @@ paths:
       operationId: delete_channel
       description: Update a channel by sending some properties
       responses:
-        '201':
+        '202':
           description: item deleted
+        '404':
+          description: item not found
+  /channels/{id_ch}/documents:
+    parameters:
+      - in: path
+        name: id_ch
+        description: Identificator of the channel
+        required: true
+        schema:
+          type: integer
+          format: int32
+    get:
+      tags:
+        - management
+      summary: Get the list of available documents of a channel
+      operationId: list_documents
+      description: |
+        List of the documents related to the channel {id_ch}
+      responses:
+        '200':
+          description: The list of document of the channel 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Document'
+                  error: 
+                    type: boolean
+                    default: false
         '400':
-          description: 'invalid input, object invalid'
+          description: bad input parameter
   /channels/new :
     post:
       tags:
@@ -114,33 +162,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Channel'
         description: Channel item to add
-  /channels/{id_ch}/documents:
-    parameters:
-      - in: path
-        name: id_ch
-        description: Identificator of the channel
-        required: true
-        schema:
-          type: integer
-          format: int32
-    get:
-      tags:
-        - management
-      summary: Get the list of available documents of a channel
-      operationId: list_documents
-      description: |
-        List of the documents related to the channel {id_ch}
-      responses:
-        '200':
-          description: search results matching criteria
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Document'
-        '400':
-          description: bad input parameter
+  
   /documents/{id_speech}:
     parameters:
       - in: path
@@ -156,22 +178,25 @@ paths:
       operationId: get_document
       responses:
         '200':
-          description: search results matching criteria
+          description: The requested single document 
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Channel'
-        '400':
-          description: bad input parameter
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Channel'
+                  error: 
+                    type: boolean
+                    default: false
         '404':
           description: document not found
     put:
       tags:
         - management
       operationId: update_document
-      
       responses:
         '201':
           description: item created
@@ -190,10 +215,10 @@ paths:
         - management
       operationId: delete_document
       responses:
-        '201':
+        '202':
           description: item deleted
-        '400':
-          description: 'invalid input, object invalid'
+        '404':
+          description: item not found
           
   /documents/new:
     post: 
@@ -224,7 +249,7 @@ paths:
         List of the comments related to the document.
       responses:
         '200':
-          description: search results matching criteria
+          description: The list of comments related to the document
           content:
             application/json:
               schema:
@@ -248,7 +273,7 @@ paths:
       operationId: get_comment
       responses:
         '200':
-          description: search results matching criteria
+          description: The single comment requested 
           content:
             application/json:
               schema:
@@ -282,10 +307,10 @@ paths:
         - management
       operationId: delete_comment
       responses:
-        '201':
+        '202':
           description: item deleted
-        '400':
-          description: 'invalid input, object invalid'
+        '404':
+          description: item not found
 
 components:
   securitySchemes:
@@ -301,7 +326,6 @@ components:
         - title
         - author
         - lang
-        - public
       properties:
         id_ch:
           type: integer
@@ -327,17 +351,20 @@ components:
           type: string
           format: long_text
         author: 
-          type: integer
-          format: int8
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
         lang:
           type: string
           default: en_US
           example: en_US (or) it_IT (or) es_ES ... 
+          description: The language of the channel. Determine the translation of the labels.
         public:
           type: boolean
           format: integer
           default: 0
           example: 1
+          description: Indicates whether the channel is visible to the public or not.
         logo: 
           type: string
           format: url
@@ -417,8 +444,10 @@ components:
           example: "I think this sentence is interesting because..."
           description: the comment related to the sentence
         user_id: 
-          type: integer
+          type: string
+          format: uuid
           description: the identificator of the user
+          example: 123e4567-e89b-12d3-a456-426614174000
     Paragraph:
       type: object 
       description: The HTML of the document, parsed and cutted in multiple commentable elements
