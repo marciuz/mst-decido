@@ -22,6 +22,27 @@ class Document extends EntityMst {
         
         $data = parent::ins($arr);
         return $data;
-    } 
+    }
+    
+    public function get_n_comments($id) {
+        
+        $sql = "SELECT count(*) 
+                FROM comm c
+                INNER JOIN speech_par sp ON sp.id_p = c.id_p
+                WHERE sp.id_speech = ?
+                ";
+        
+        return $this->vmsql->get_item($sql, [$id]);
+    }
+    
+    public function select($id, $fields = '*') {
+        
+        $data = parent::select($id, $fields);
+        if(!empty($data)) {
+            $data['n_comm'] = $this->get_n_comments($id);
+        }
+        
+        return $data;
+    }
     
 }

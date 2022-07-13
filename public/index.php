@@ -34,8 +34,7 @@ $router->map( 'GET', '/channels', function() {
 
 $router->map( 'GET', '/channels/[i:id_ch]', function($id_ch) {
     
-    (new Api())->get_authorization();
-    //Api::get_channel($id_ch);
+    Api::get_channel($id_ch);
 });
 
 $router->map( 'GET', '/channels/[i:id_ch]/documents', function($id_ch) {
@@ -45,6 +44,10 @@ $router->map( 'GET', '/channels/[i:id_ch]/documents', function($id_ch) {
 // 
 $router->map( 'GET', '/documents/[i:id_doc]', function($id_doc) {
     Api::get_document($id_doc);
+});
+
+$router->map( 'GET', '/documents/[i:id_doc]/comments', function($id_doc) {
+    Api::list_comments($id_doc);
 });
 
 

@@ -8,7 +8,7 @@ class EntityMst extends \Entity {
         
         foreach($man_fields as $ff) {
             
-            if(isset($data[$ff]) || empty($data[$ff])) {
+            if(!isset($data[$ff]) || empty($data[$ff])) {
                 
                 throw new ApiException('Mandatory field(s) not present', 
                         \Enum::MANDATORY_FIELDS,
@@ -18,4 +18,6 @@ class EntityMst extends \Entity {
         
         return true;
     }
+    
+    
 }

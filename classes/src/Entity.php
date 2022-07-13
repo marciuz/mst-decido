@@ -186,11 +186,11 @@ abstract class Entity {
         $q = $this->vmsql->query($sql, $values);
 
         $res = $this->vmsql->affected_rows($q);
-
+        
         if ($res == 1) {
 
             $id_record = $this->vmsql->insert_id($this->nometabella, $this->pk);
-
+            
             // Log
             if (STORE_DB_LOG) {
                 $this->insertLog('insert', '', json_encode($arr), $id_record);

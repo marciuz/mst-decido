@@ -11,6 +11,8 @@ if(APPLICATION_DEBUG) {
     error_reporting(E_ALL);
 }
 
+$T0 = microtime(true);
+
 // Session
 session_start();
 
