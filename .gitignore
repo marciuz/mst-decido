@@ -1,4 +1,6 @@
 conf/conf.php
 public/docs
 _test
-.DS_Storelog/runtime.log
+.DS_Store
+log/runtime.log
+
